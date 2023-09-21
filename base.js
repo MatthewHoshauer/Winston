@@ -54,3 +54,27 @@ HTTP:    Stream logs to an HTTP endpoint.
 Stream:  Output logs to any Node.js stream.
 
 */
+
+// Creating a transport system that stores messages in a FILE
+
+const winston = require('winston');
+const { combine, timestamp, json } = winston.format;
+
+const logger2 = winston.createLogger({         // This logger will create two files
+    level: process.env.LOG_LEVEL || 'info',
+    format: combine(timestamp(), json()),
+    transports: [
+      new winston.transports.File({      // Generally all messages  
+        filename: 'combined.log',
+      }),
+      new winston.transports.File({      // Error messages ONLY
+        filename: 'app-error.log',
+        level: 'error', // Key
+      }),
+    ],
+  });
+  
+
+logger2.info('Info message');
+logger2.error('Error message');
+logger2.warn('Warning message');
